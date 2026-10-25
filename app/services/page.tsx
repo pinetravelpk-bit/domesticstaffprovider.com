@@ -1,0 +1,7 @@
+import type {Metadata} from 'next';
+import Link from 'next/link';
+import {services} from '@/data/site';
+import {ServiceIcon,ArrowRight} from '@/components/UI';
+import {InnerHero,InnerCTA} from '@/components/InnerLayout';
+export const metadata:Metadata={title:'Domestic Staffing Services in Pakistan',description:'Explore domestic staffing services: maids, cooks, drivers, nannies, home nurses, caretakers, cleaning staff and more.',alternates:{canonical:'/services'}};
+export default function Page(){return <main><InnerHero eyebrow="OUR SERVICES" title="The right support for every part of home." description="Find professional domestic staffing support tailored to your household routines, working hours and location."/><section className="container inner-content"><div className="center-heading"><h2>Explore our staffing services.</h2><p>Every request is coordinated around your role, city and requirements.</p></div><div className="all-services-grid">{services.map(s=><Link key={s.slug} href={`/services/${s.slug}`} className="all-service-card"><div className="all-service-photo">{s.image?<img src={s.image} alt={s.title}/>:<ServiceIcon name={s.icon} size={50}/>}</div><div className="all-service-body"><span className="round-service-icon"><ServiceIcon name={s.icon}/></span><h3>{s.title}</h3><p>{s.description}</p><span className="link-arrow">Explore Service <ArrowRight size={15}/></span></div></Link>)}</div></section><InnerCTA/></main>}

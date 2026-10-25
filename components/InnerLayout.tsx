@@ -1,0 +1,7 @@
+import Link from 'next/link';
+import {ArrowRight,CheckCircle2} from 'lucide-react';
+import {CTA,WhatsAppCTA} from './UI';
+import {services} from '@/data/site';
+export function InnerHero({eyebrow,title,description,image}:{eyebrow:string;title:string;description:string;image?:string}){return <section className="inner-hero"><div className="container inner-hero-grid"><div><span className="eyebrow green">{eyebrow}</span><h1>{title}</h1><p>{description}</p><div className="inner-hero-buttons"><CTA>Request Staff</CTA><WhatsAppCTA/></div></div><div className="inner-hero-img"><img src={image||'/images/hero-family.jpg'} alt="Friendly domestic staff assisting a family"/></div></div></section>}
+export function InnerCTA(){return <section className="inner-cta"><div className="container inner-cta-in"><div><span className="eyebrow">START YOUR REQUEST</span><h2>The right help begins with one conversation.</h2><p>Tell us what you need. Our team will explain candidate availability, salary expectations and written placement terms.</p></div><CTA white>Request Staff Today</CTA></div></section>}
+export function RelatedServices({current}:{current?:string}){return <div className="related-links"><h3>Explore other staffing services</h3><div>{services.filter((s:any)=>s.slug!==current).slice(0,8).map((s:any)=><Link href={`/services/${s.slug}`} key={s.slug}>{s.title}<ArrowRight size={15}/></Link>)}</div></div>}

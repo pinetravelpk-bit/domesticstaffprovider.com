@@ -1,0 +1,4 @@
+import type {Metadata} from 'next';
+import {SITE} from '@/data/site';
+export const metadata:Metadata={title:'Terms & Conditions'};
+export default function Page(){return <main className="container legal-page"><h1>Terms &amp; Conditions</h1><p>Service descriptions on this website are for enquiries. Candidate availability, salaries, working hours and start dates depend on the individual role and city and are confirmed directly with the team.</p><p>For standard monthly placements, the one-time placement fee generally equals the agreed one-month staff salary. Staff salaries are separate. Six-month replacement support is subject to written eligibility and replacement conditions; request the full written agreement before confirming a hire.</p><p>Sending a WhatsApp enquiry does not constitute a booking, guarantee candidate availability or authorize a payment. Contact <a href={`tel:${SITE.phone}`}>{SITE.phoneDisplay}</a> with questions.</p></main>}
