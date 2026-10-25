@@ -36,7 +36,7 @@ export default function HomePage(){
         </div>
       </div>
       <div className="hero-visual">
-        <img src="/images/hero-family.jpg" alt="Happy Pakistani family relaxing together at home" width={1800} height={1200} fetchPriority="high"/>
+        <img src="/images/hero-staff.webp" alt="Uniformed maid, cook and driver helping a Pakistani family at home" width={1993} height={789} fetchPriority="high"/>
         <div className="hero-badge hero-badge-top"><span><ShieldCheck size={18}/></span><div><strong>Screened candidates</strong><small>References discussed</small></div></div>
         <div className="hero-badge hero-badge-bottom"><span><HeartHandshake size={18}/></span><div><strong>6-month replacement</strong><small>On standard placements</small></div></div>
       </div>
@@ -65,7 +65,7 @@ export default function HomePage(){
 
   <section className="value-section"><div className="container"><div className="value-card">
     <div className="value-details"><h2>The right staff<br/><em>makes a happier home.</em></h2><p>Experienced and reliable domestic staffing to make your life easier and more comfortable.</p><div className="value-icons">{[{I:ShieldCheck,t:'Clear Staff\nScreening'},{I:Users,t:'Experienced\nOptions'},{I:Clock3,t:'Coordinated\nHiring'},{I:Headphones,t:'Replacement\nSupport'},{I:HeartHandshake,t:'Dedicated\nService'}].map(({I,t})=><div key={t}><I size={27}/><strong>{t}</strong></div>)}</div></div>
-    <div className="value-illustration"><div className="value-house-frame"><img src="/images/happy-home.jpg" alt="Mother and baby smiling at home" loading="lazy" width={600} height={500}/></div><div className="safe-badge"><ShieldCheck size={20}/><span>A Safer<br/>Happier Home</span></div></div>
+    <div className="value-illustration"><div className="value-house-frame"><img src="/images/happy-home.jpg" alt="Pakistani mother holding her baby" loading="lazy" width={600} height={500}/></div><div className="safe-badge"><ShieldCheck size={20}/><span>A Safer<br/>Happier Home</span></div></div>
   </div></div></section>
 
   <section className="process-section"><div className="container process-grid">

@@ -236,3 +236,18 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{ou
  .bottom-cta p{font-size:12px}
 }
 .not-found-screen{min-height:55vh;max-width:650px;margin:0 auto;padding:96px 24px;text-align:center}.not-found-screen>svg{color:var(--green);margin:auto auto 22px}.not-found-screen h1{font-size:clamp(2rem,5vw,3.8rem)}.not-found-screen p:not(.eyebrow){color:#697875;font-size:16px}.not-found-screen>div{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:27px}
+
+/* Staff hero photo: full-width background on desktop, maid-side crop on smaller screens. */
+.hero{background:#f8f3ec}
+.hero-visual>img{object-position:72% center!important}
+@media(min-width:1000px){
+ .hero-grid{min-height:520px}
+ .hero-visual{position:absolute;inset:0;z-index:0;min-height:0;height:auto;animation:none}
+ .hero-visual>img{left:0!important;width:100%!important;height:100%;object-position:right 30%!important;mask-image:none!important;-webkit-mask-image:none!important}
+ .hero-visual:after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,#f8f3ec 0%,rgba(248,243,236,.92) 26%,rgba(248,243,236,0) 46%);pointer-events:none}
+ .hero-copy{position:relative;z-index:2}
+ .hero-badge-top{top:26px;right:auto;left:calc(39% + 40px)}
+ .hero-badge-bottom{bottom:26px;right:auto;left:calc(39% + 40px)}
+}
+@media(max-width:620px){.hero-visual>img{object-position:74% center!important}}
+@media(max-width:620px){.hero-badge-top{left:12px;right:auto}}
