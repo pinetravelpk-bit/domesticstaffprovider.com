@@ -251,3 +251,5 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{ou
 }
 @media(max-width:620px){.hero-visual>img{object-position:74% center!important}}
 @media(max-width:620px){.hero-badge-top{left:12px;right:auto}}
+.all-service-photo,.service-photo{overflow:hidden;position:relative}
+.all-service-photo img,.service-photo>img{display:block;width:100%;height:100%!important;object-fit:cover}
