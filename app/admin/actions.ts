@@ -9,6 +9,7 @@ import {getContent,updateContent,slugify,isSlug} from '@/lib/content';
 import {saveImage} from '@/lib/uploads';
 import {serviceIcons} from '@/data/site';
 import type {Post,Service,City} from '@/data/site';
+import {addLead,updateLead,deleteLeads,LEAD_STATUSES,statusLabel,type LeadStatus} from '@/lib/leads';
 
 const str=(f:FormData,k:string,max=5000)=>String(f.get(k)??'').trim().slice(0,max);
 const lines=(f:FormData,k:string)=>str(f,k,20000).split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
@@ -40,6 +41,11 @@ export async function savePost(f:FormData){
   for(let n=2,base=slug;taken.has(slug);n++) slug=`${base}-${n}`;
   let cover:string|null=null,warning='';
   try{cover=await saveImage(f.get('coverFile'),slug)}catch(e){warning=` The cover photo was not saved: ${(e as Error).message}`}
+  let og:string|null=null;
+  try{og=await saveImage(f.get('ogFile'),`${slug}-share`)}catch(e){warning+=` The social share image was not saved: ${(e as Error).message}`}
+  const canonical=str(f,'canonical',300);
+  const okCanonical=!canonical||/^(https?:\/\/|\/)/i.test(canonical);
+  if(!okCanonical) warning+=' The canonical URL must start with https:// or /, so it was left empty.';
   const status=str(f,'status')==='published'?'published':'draft';
   const date=str(f,'publishedAt',10);
   const now=new Date().toISOString();
@@ -53,6 +59,17 @@ export async function savePost(f:FormData){
       coverAlt:str(f,'coverAlt',200)||undefined,
       seoTitle:str(f,'seoTitle',120)||undefined,
       seoDescription:str(f,'seoDescription',300)||undefined,
+      focusKeyword:str(f,'focusKeyword',100)||undefined,
+      keywords:str(f,'keywords',400)||undefined,
+      canonical:okCanonical?(canonical||undefined):undefined,
+      noindex:f.get('noindex')?true:undefined,
+      nofollow:f.get('nofollow')?true:undefined,
+      ogTitle:str(f,'ogTitle',120)||undefined,
+      ogDescription:str(f,'ogDescription',300)||undefined,
+      ogImage:f.get('removeOg')?undefined:(og||old?.ogImage),
+      category:str(f,'category',60)||undefined,
+      tags:str(f,'tags',300)||undefined,
+      author:str(f,'author',80)||undefined,
       publishedAt:/^\d{4}-\d{2}-\d{2}$/.test(date)?new Date(date+'T09:00:00+05:00').toISOString():(old?.publishedAt||now),
       updatedAt:now,
     };
@@ -193,4 +210,33 @@ export async function changePasswordAction(f:FormData){
   const err=await changePassword(String(f.get('current')??''),next);
   if(err) back('/admin/settings',err,'error');
   back('/admin/settings','Password changed.');
+}
+
+/* ---------- leads ---------- */
+export async function saveLead(f:FormData){
+  await requireAdmin();
+  const id=str(f,'id',20);
+  const status=(LEAD_STATUSES as readonly string[]).includes(str(f,'status'))?str(f,'status') as LeadStatus:'new';
+  const fields={name:str(f,'name',100),phone:str(f,'phone',30),service:str(f,'service',100),city:str(f,'city',120),arrangement:str(f,'arrangement',40),details:str(f,'details',1000),notes:str(f,'notes',5000),status};
+  if(id){updateLead(id,fields);back(`/admin/leads/${id}`,'Lead saved.')}
+  if(fields.phone.replace(/\D/g,'').length<7) back('/admin/leads/new','Please enter a phone number.','error');
+  const lead=addLead({...fields,page:'',source:'manual'});
+  back(`/admin/leads/${lead.id}`,'Contact added.');
+}
+
+export async function deleteLeadAction(f:FormData){
+  await requireAdmin();
+  deleteLeads([str(f,'id',20)]);
+  back('/admin/leads','Lead deleted.');
+}
+
+export async function bulkLeads(f:FormData){
+  await requireAdmin();
+  const ids=f.getAll('ids').map(String).filter(Boolean);
+  const op=str(f,'op');const keep=str(f,'return',300)||'/admin/leads';
+  const url=keep.startsWith('/admin/leads')?keep:'/admin/leads';
+  if(!ids.length) back(url,'Tick at least one lead first.','error');
+  if(op==='delete'){deleteLeads(ids);back(url,`${ids.length} lead(s) deleted.`)}
+  if((LEAD_STATUSES as readonly string[]).includes(op)){for(const id of ids) updateLead(id,{status:op as LeadStatus});back(url,`${ids.length} lead(s) marked as ${statusLabel[op as LeadStatus]}.`)}
+  back(url,'Choose an action.','error');
 }

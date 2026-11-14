@@ -14,10 +14,13 @@ marked.use({
 
 function escape(s: string) {return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}
 
-export function renderMarkdown(src: string): string {
+export function renderMarkdown(src: string, opts: {nofollow?: boolean} = {}): string {
   const html = marked.parse(src || '', {async: false}) as string;
-  // Open outside links in a new tab.
-  return html.replace(/<a href="(https?:\/\/(?!domesticstaffprovider\.com)[^"]*)"/g, '<a href="$1" target="_blank" rel="noopener"');
+  // Open outside links in a new tab; add nofollow when the post asks for it.
+  const rel = opts.nofollow ? 'noopener nofollow' : 'noopener';
+  let out = html.replace(/<a href="(https?:\/\/(?!domesticstaffprovider\.com)[^"]*)"/g, `<a href="$1" target="_blank" rel="${rel}"`);
+  if (opts.nofollow) out = out.replace(/<a href="([^"]*)"(?![^>]*\brel=)/g, '<a href="$1" rel="nofollow"');
+  return out;
 }
 
 export const readingMinutes = (src: string) => Math.max(1, Math.round((src || '').split(/\s+/).length / 200));

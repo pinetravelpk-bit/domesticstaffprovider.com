@@ -18,7 +18,7 @@ const stories=[
 ];
 
 export default function HomePage(){
-  const {services,cities,faqs,steps}=useContent();
+  const {services,cities,faqs,steps,latestPosts}=useContent();
   const[filter,setFilter]=useState('Popular');const[offset,setOffset]=useState(0);const[story,setStory]=useState(2);const[openFaq,setOpenFaq]=useState<number|null>(null);
   const current=useMemo(()=>{const slugs=groupMap[filter]||popular;const list=slugs.map(slug=>services.find(s=>s.slug===slug)!).filter(Boolean);return list.length?list:services},[filter,services]);
   const shown=current.length?[...new Set([0,1,2].map(i=>current[(i+offset)%current.length]))]:[];
@@ -86,6 +86,11 @@ export default function HomePage(){
       <div className="area-badge"><MapPin size={18}/><div><strong>{cities.length} major cities</strong><small>Enquiries accepted nationwide</small></div></div>
     </div>
   </div></section>
+
+  {latestPosts.length>0&&<section className="home-blog section"><div className="container">
+    <div className="home-blog-head"><div><span className="eyebrow green">FROM OUR BLOG</span><h2>Hiring tips for<br/><em>Pakistani homes.</em></h2></div><Link href="/blog" className="link-arrow">All articles <ArrowRight size={17}/></Link></div>
+    <div className="blog-list">{latestPosts.map(p=><Link key={p.slug} href={`/blog/${p.slug}`} className="blog-card"><div className="blog-card-img"><img src={p.cover||'/images/hero-family.jpg'} alt={p.coverAlt||p.title} loading="lazy" width={800} height={450}/></div><div className="blog-card-body"><small>{p.category?`${p.category} · `:''}{new Date(p.publishedAt).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})}</small><h3>{p.title}</h3>{p.excerpt&&<p>{p.excerpt}</p>}<span className="link-arrow">Read more <ArrowRight size={15}/></span></div></Link>)}</div>
+  </div></section>}
 
   <section className="faq-section section"><div className="container faq-grid">
     <div className="faq-intro"><h2>You probably<br/><em>have questions.</em></h2><div className="question-art" aria-hidden="true"><CircleHelp size={46} strokeWidth={1.8}/></div></div>

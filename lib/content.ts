@@ -8,7 +8,8 @@ import type {SiteSettings, Service, City, Faq, Step, Post} from '@/data/site';
 
 export type Content = {site:SiteSettings;services:Service[];cities:City[];faqs:Faq[];steps:Step[];posts:Post[]};
 // What the browser-side components need (no blog bodies).
-export type PublicContent = Omit<Content,'posts'> & {hasBlog:boolean};
+export type PostCard = {slug:string;title:string;excerpt:string;cover?:string;coverAlt?:string;publishedAt:string;category?:string};
+export type PublicContent = Omit<Content,'posts'> & {hasBlog:boolean;latestPosts:PostCard[]};
 
 // On the server the app runs from /var/www/domesticstaffprovider/current, so this is
 // /var/www/domesticstaffprovider/dsp-content. Locally it sits next to the project folder.
@@ -49,7 +50,8 @@ function withFixed(c:Content):Content{return {...c, site:{...c.site,...FIXED}}}
 
 export function getPublicContent():PublicContent{
   const {posts,...rest}=getContent();
-  return {...rest, hasBlog:posts.some(p=>p.status==='published')};
+  const live=posts.filter(p=>p.status==='published').sort((a,b)=>b.publishedAt.localeCompare(a.publishedAt));
+  return {...rest, hasBlog:live.length>0, latestPosts:live.slice(0,3).map(({slug,title,excerpt,cover,coverAlt,publishedAt,category})=>({slug,title,excerpt,cover,coverAlt,publishedAt,category}))};
 }
 
 export function publishedPosts():Post[]{
