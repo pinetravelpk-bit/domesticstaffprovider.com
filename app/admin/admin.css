@@ -1,0 +1,85 @@
+/* Admin panel styles (all classes start with adm-). */
+.adm{--g:#00844f;--gd:#006b40;--ink:#132c35;--mut:#64757a;--line:#dfe8e3;--bg:#f4f7f5;min-height:100vh;background:var(--bg);color:var(--ink);font-size:14px}
+.adm *{box-sizing:border-box}
+.adm a{color:inherit}
+.adm-shell{display:grid;grid-template-columns:230px minmax(0,1fr);min-height:100vh}
+.adm-side{background:#0f2b2c;color:#d9ebe3;padding:22px 14px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:4px}
+.adm-logo{font-weight:900;font-size:16px;color:#fff;padding:4px 10px 18px;letter-spacing:-.02em}
+.adm-logo small{display:block;font-weight:600;font-size:11px;color:#8fc7ad;letter-spacing:0}
+.adm-side a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;text-decoration:none;font-weight:700;font-size:13.5px}
+.adm-side a:hover{background:#ffffff14}
+.adm-side a.on{background:var(--g);color:#fff}
+.adm-side .adm-grow{flex:1}
+.adm-side form button{all:unset;cursor:pointer;display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;font-weight:700;font-size:13.5px;width:100%;box-sizing:border-box}
+.adm-side form button:hover{background:#ffffff14}
+.adm-main{padding:30px 34px 60px;max-width:1100px;width:100%}
+.adm-top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:22px;flex-wrap:wrap}
+.adm-top h1{font-size:26px;margin:0;letter-spacing:-.03em}
+.adm-top p{margin:4px 0 0;color:var(--mut)}
+.adm-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px;margin-bottom:18px}
+.adm-card h2{font-size:17px;margin:0 0 14px}
+.adm-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:22px}
+.adm-stat{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px;text-decoration:none;display:block}
+.adm-stat strong{display:block;font-size:28px;letter-spacing:-.03em}
+.adm-stat span{color:var(--mut);font-weight:700;font-size:12.5px}
+.adm-stat:hover{border-color:var(--g)}
+.adm-btn{display:inline-flex;align-items:center;gap:8px;background:var(--g);color:#fff!important;border:0;border-radius:10px;padding:10px 16px;font-weight:800;font-size:13.5px;cursor:pointer;text-decoration:none;font-family:inherit}
+.adm-btn:hover{background:var(--gd)}
+.adm-btn.ghost{background:#fff;color:var(--ink)!important;border:1px solid var(--line)}
+.adm-btn.ghost:hover{border-color:var(--g)}
+.adm-btn.danger{background:#fff;color:#b42318!important;border:1px solid #f1c8c3}
+.adm-btn.danger:hover{background:#fff4f2}
+.adm-btn.sm{padding:6px 10px;font-size:12px;border-radius:8px}
+.adm-table{width:100%;border-collapse:collapse}
+.adm-table th{text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);padding:8px 10px;border-bottom:1px solid var(--line)}
+.adm-table td{padding:12px 10px;border-bottom:1px solid #edf2ef;vertical-align:middle}
+.adm-table tr:last-child td{border-bottom:0}
+.adm-table td.act{text-align:right;white-space:nowrap}
+.adm-table td.act>*{margin-left:6px}
+.adm-table form{display:inline}
+.adm-thumb{width:64px;height:44px;border-radius:8px;object-fit:cover;background:#e9f2ed;display:block}
+.adm-tag{display:inline-block;font-size:11px;font-weight:800;padding:3px 8px;border-radius:20px;background:#e6f6ee;color:var(--gd)}
+.adm-tag.draft{background:#fff3d6;color:#8a5a00}
+.adm-form{display:grid;gap:16px}
+.adm-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.adm-field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.adm-field>span{font-weight:800;font-size:12.5px}
+.adm-field small{color:var(--mut);font-size:12px;font-weight:500}
+.adm input[type=text],.adm input[type=password],.adm input[type=email],.adm input[type=tel],.adm input[type=date],.adm select,.adm textarea{width:100%;border:1px solid #d3dfd8;border-radius:10px;padding:10px 12px;font:inherit;color:var(--ink);background:#fff;outline:none}
+.adm input:focus,.adm select:focus,.adm textarea:focus{border-color:var(--g);box-shadow:0 0 0 3px #00a06022}
+.adm textarea{resize:vertical;line-height:1.55}
+.adm textarea.adm-body{min-height:420px;font-family:ui-monospace,Consolas,monospace;font-size:13.5px}
+.adm-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.adm-msg{padding:12px 14px;border-radius:10px;margin-bottom:16px;font-weight:700}
+.adm-msg.ok{background:#e6f6ee;color:#05603a}
+.adm-msg.err{background:#fff1f0;color:#b42318}
+.adm-img-pick{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.adm-img-pick img{width:150px;height:100px;object-fit:cover;border-radius:10px;border:1px solid var(--line)}
+.adm-check{display:flex;gap:8px;align-items:center;font-weight:600}
+.adm-toolbar{display:flex;gap:6px;flex-wrap:wrap;padding:8px;border:1px solid #d3dfd8;border-bottom:0;border-radius:10px 10px 0 0;background:#f8fbf9}
+.adm-toolbar button{border:1px solid var(--line);background:#fff;border-radius:7px;padding:5px 10px;font-weight:800;font-size:12.5px;cursor:pointer;font-family:inherit;color:var(--ink)}
+.adm-toolbar button:hover{border-color:var(--g)}
+.adm-toolbar .adm-sp{flex:1}
+.adm-toolbar+textarea{border-radius:0 0 10px 10px}
+.adm-preview{border:1px solid #d3dfd8;border-radius:0 0 10px 10px;padding:20px 24px;min-height:420px;background:#fff}
+.adm-help{color:var(--mut);font-size:12.5px;margin:6px 0 0;line-height:1.6}
+.adm-help code{background:#eef4f0;padding:1px 5px;border-radius:5px}
+.adm-faq{border:1px solid var(--line);border-radius:12px;padding:14px;display:grid;gap:10px}
+.adm-faq.new{border-style:dashed}
+.adm-login{min-height:100vh;display:grid;place-items:center;padding:20px}
+.adm-login .adm-card{width:100%;max-width:380px;padding:30px}
+.adm-login h1{font-size:22px;margin:0 0 4px}
+.adm-login p{color:var(--mut);margin:0 0 20px}
+.adm-empty{text-align:center;color:var(--mut);padding:30px}
+.adm-split{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px;align-items:start}
+@media(max-width:900px){
+ .adm-shell{grid-template-columns:1fr}
+ .adm-side{position:static;height:auto;flex-direction:row;flex-wrap:wrap;padding:12px}
+ .adm-logo{width:100%;padding-bottom:8px}
+ .adm-side .adm-grow{display:none}
+ .adm-side a,.adm-side form button{padding:8px 10px;font-size:12.5px}
+ .adm-main{padding:20px 16px 50px}
+ .adm-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .adm-row,.adm-split{grid-template-columns:1fr}
+ .adm-table .hide-sm{display:none}
+}

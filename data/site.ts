@@ -1,3 +1,5 @@
+// Default content. Live content is edited in /admin and stored on the server (see lib/content.ts);
+// these values are only used to seed it the first time.
 export const SITE = {
   brand: 'Domestic Staff Provider',
   domain: 'domesticstaffprovider.com',
@@ -53,4 +55,10 @@ export const steps = [
   {title:'We coordinate candidates',body:'Our team reviews your brief and arranges suitable candidates to assess.'},
   {title:'Hire with confidence',body:'Confirm duties, salary, placement fee and written replacement terms.'}
 ];
+export type SiteSettings = typeof SITE;
+export type Faq = {q:string;a:string};
+export type Step = {title:string;body:string};
+export type Post = {id:string;slug:string;title:string;excerpt:string;body:string;cover?:string;coverAlt?:string;status:'draft'|'published';publishedAt:string;updatedAt:string;seoTitle?:string;seoDescription?:string};
+export const serviceIcons = ['maid','chef','driver','nurse','baby','heart','clean','couple','helper','shield','garden','briefcase'];
+export const waLink = (whatsapp:string, role?:string, city?:string) => `https://wa.me/${whatsapp}?text=${encodeURIComponent(`Hello Domestic Staff Provider, I would like to hire ${role || 'domestic staff'}${city ? ` in ${city}` : ''}. Please share the hiring process and availability.`)}`;
 export const WA = (role?:string, city?:string) => `https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent(`Hello Domestic Staff Provider, I would like to hire ${role || 'domestic staff'}${city ? ` in ${city}` : ''}. Please share the hiring process and availability.`)}`;

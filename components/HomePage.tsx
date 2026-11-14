@@ -2,7 +2,7 @@
 import {useMemo,useState} from 'react';
 import Link from 'next/link';
 import {CircleHelp} from 'lucide-react';
-import {services,cities,faqs,steps} from '@/data/site';
+import {useContent} from './ContentProvider';
 import {CTA,WhatsAppCTA,ServiceIcon,ArrowRight,CheckCircle2,ChevronLeft,ChevronRight,ChevronDown,Clock3,Headphones,MapPin,ShieldCheck,Users,HeartHandshake,BadgeCheck} from './UI';
 
 const pills=['Popular','Home Staff','Care Staff','Drivers','Support Staff'];
@@ -18,9 +18,10 @@ const stories=[
 ];
 
 export default function HomePage(){
+  const {services,cities,faqs,steps}=useContent();
   const[filter,setFilter]=useState('Popular');const[offset,setOffset]=useState(0);const[story,setStory]=useState(2);const[openFaq,setOpenFaq]=useState<number|null>(null);
-  const current=useMemo(()=>{const slugs=groupMap[filter]||popular;return slugs.map(slug=>services.find(s=>s.slug===slug)!).filter(Boolean)},[filter]);
-  const shown=[0,1,2].map(i=>current[(i+offset)%current.length]);
+  const current=useMemo(()=>{const slugs=groupMap[filter]||popular;const list=slugs.map(slug=>services.find(s=>s.slug===slug)!).filter(Boolean);return list.length?list:services},[filter,services]);
+  const shown=current.length?[...new Set([0,1,2].map(i=>current[(i+offset)%current.length]))]:[];
   function changeFilter(s:string){setFilter(s);setOffset(0)}
   return <main>
   <section className="hero" id="home">
