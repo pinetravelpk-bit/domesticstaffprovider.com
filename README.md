@@ -46,3 +46,12 @@ The delivered reference reproduction was rendered as a standalone HTML preview a
 A Next.js `npm run build` could not be completed in this environment because installing npm dependencies was blocked/timed out. Run `npm install` and `npm run build` before deployment to confirm version compatibility. The previews show the project's intended appearance but are not a substitute for testing the installed Next.js app in your hosting environment.
 
 The approved image file is stored in `reference/approved-homepage.png` for design comparison; it is **not** used as a full-screen site background. Since the original was a generated 724px-wide mockup with rasterized text, a truly pixel-perfect copy with high-resolution standalone photographs requires those original design/image source files; this project recreates the visual structure, palette and sections in editable components.
+
+## Admin panel
+
+- Log in at `/admin` to write blog posts and edit services, cities, FAQs, how-it-works steps and contact details. Changes go live on save.
+- Content and uploaded photos are stored outside the code folder, in `../dsp-content` (on the server: `/var/www/domesticstaffprovider/dsp-content`). Deploys never touch it. Every save keeps the previous version in `dsp-content/history/` (last 50).
+- `data/site.ts` only holds the starting content used before the first admin save.
+- Forgot the password? On the server run:
+  `cd /var/www/domesticstaffprovider/current && sudo -u domesticstaffprovider node scripts/set-admin-password.mjs`
+  (it asks for a new password; this also logs out every device).
