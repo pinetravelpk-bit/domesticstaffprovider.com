@@ -25,6 +25,10 @@ function faqsOf(body:string){
 }
 const REGION:Record<string,string>={'punjab':'PK-PB','sindh':'PK-SD','khyber pakhtunkhwa':'PK-KP','balochistan':'PK-BA','islamabad capital territory':'PK-IS','gilgit-baltistan':'PK-GB','azad jammu and kashmir':'PK-JK','azad kashmir':'PK-JK'};
 
+// Pages are rebuilt every 5 minutes, so scheduled posts appear (and stop 404ing) on time.
+export const revalidate=300;
+export const dynamicParams=true;
+
 export function generateStaticParams(){return publishedPosts().map(p=>({slug:p.slug}))}
 
 export async function generateMetadata({params}:{params:Promise<{slug:string}>}):Promise<Metadata>{
