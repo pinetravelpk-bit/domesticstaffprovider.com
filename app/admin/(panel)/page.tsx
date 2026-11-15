@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import {Plus,MessageCircle,Phone,FileText,Users} from 'lucide-react';
-import {getContent} from '@/lib/content';
+import {getContent,isLive} from '@/lib/content';
 import {getLeads,getStats,statusLabel,dayKey} from '@/lib/leads';
 import {fmtDateTime,fmtDate} from '@/components/admin/format';
 
@@ -36,7 +36,7 @@ export default function Dashboard(){
   const newCount=leads.filter(l=>l.status==='new').length;
   const hired=leads.filter(l=>l.status==='hired').length;
   const wa30=stats.reduce((s,d)=>s+d.whatsapp,0),call30=stats.reduce((s,d)=>s+d.call,0);
-  const published=c.posts.filter(p=>p.status==='published').length;
+  const published=c.posts.filter(isLive).length;
   const topServices=top(lead30.map(l=>l.service)),topCities=top(lead30.map(l=>l.city.split(',').pop()||''));
   const bars=(rows:[string,number][])=>{const m=Math.max(1,...rows.map(r=>r[1]));return rows.length?<div className="adm-bars">{rows.map(([k,v])=><div key={k}><span>{k}</span><i style={{width:`${(v/m)*100}%`}}/><b>{v}</b></div>)}</div>:<p className="adm-empty" style={{padding:16}}>No leads in the last 30 days yet.</p>};
   return <>

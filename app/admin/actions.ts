@@ -47,7 +47,7 @@ export async function savePost(f:FormData){
   const okCanonical=!canonical||/^(https?:\/\/|\/)/i.test(canonical);
   if(!okCanonical) warning+=' The canonical URL must start with https:// or /, so it was left empty.';
   const status=str(f,'status')==='published'?'published':'draft';
-  const date=str(f,'publishedAt',10);
+  const date=str(f,'publishedAt',16);
   const now=new Date().toISOString();
   updateContent(c=>{
     const old=c.posts.find(p=>p.id===id);
@@ -70,7 +70,9 @@ export async function savePost(f:FormData){
       category:str(f,'category',60)||undefined,
       tags:str(f,'tags',300)||undefined,
       author:str(f,'author',80)||undefined,
-      publishedAt:/^\d{4}-\d{2}-\d{2}$/.test(date)?new Date(date+'T09:00:00+05:00').toISOString():(old?.publishedAt||now),
+      publishedAt:/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(date)?new Date(date+':00+05:00').toISOString():/^\d{4}-\d{2}-\d{2}$/.test(date)?new Date(date+'T09:00:00+05:00').toISOString():(old?.publishedAt||now),
+      locality:str(f,'locality',80)||undefined,
+      region:str(f,'region',80)||undefined,
       updatedAt:now,
     };
     if(old) Object.assign(old,post); else c.posts.unshift(post);

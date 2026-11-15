@@ -9,6 +9,21 @@ import EnquiryForm from '@/components/EnquiryForm';
 
 const fmt=(d:string)=>new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
 const find=(slug:string)=>publishedPosts().find(p=>p.slug===slug);
+const plain=(md:string)=>md.replace(/!\[[^\]]*\]\([^)]*\)/g,'').replace(/\[([^\]]*)\]\([^)]*\)/g,'$1').replace(/[#*>_`|]/g,'').replace(/\s+/g,' ').trim();
+// Questions under a "Frequently asked questions" / "FAQ" heading, written as ### Question + answer,
+// become FAQ rich-result data for Google and AI answer engines.
+function faqsOf(body:string){
+  const lines=body.split(/\r?\n/);
+  const start=lines.findIndex(l=>/^##\s/.test(l)&&/frequently asked|\bfaqs?\b/i.test(l));
+  if(start<0) return [];
+  const out:{q:string;a:string}[]=[];
+  for(let i=start+1;i<lines.length&&!/^##\s/.test(lines[i]);i++){
+    if(/^###\s/.test(lines[i])) out.push({q:plain(lines[i].replace(/^###\s+/,'')),a:''});
+    else if(out.length) out[out.length-1].a+=' '+lines[i];
+  }
+  return out.map(f=>({q:f.q,a:plain(f.a)})).filter(f=>f.q&&f.a);
+}
+const REGION:Record<string,string>={'punjab':'PK-PB','sindh':'PK-SD','khyber pakhtunkhwa':'PK-KP','balochistan':'PK-BA','islamabad capital territory':'PK-IS','gilgit-baltistan':'PK-GB','azad jammu and kashmir':'PK-JK','azad kashmir':'PK-JK'};
 
 export function generateStaticParams(){return publishedPosts().map(p=>({slug:p.slug}))}
 
@@ -27,6 +42,7 @@ export async function generateMetadata({params}:{params:Promise<{slug:string}>})
     robots:{index:!p.noindex,follow:!p.nofollow,googleBot:{index:!p.noindex,follow:!p.nofollow,'max-image-preview':'large'}},
     openGraph:{type:'article',title:shareTitle,description:shareDesc,url:`/blog/${p.slug}`,siteName:'Domestic Staff Provider',locale:'en_PK',publishedTime:p.publishedAt,modifiedTime:p.updatedAt,authors:[p.author||'Domestic Staff Provider'],section:p.category,tags,images:shareImg?[{url:shareImg,alt:p.coverAlt||p.title}]:undefined},
     twitter:{card:'summary_large_image',title:shareTitle,description:shareDesc,images:shareImg?[shareImg]:undefined},
+    other:p.locality?{'geo.placename':[p.locality,p.region,'Pakistan'].filter(Boolean).join(', '),'geo.region':REGION[(p.region||'').toLowerCase()]||'PK'}:undefined,
   };
 }
 
@@ -34,7 +50,19 @@ export default async function BlogPost({params}:{params:Promise<{slug:string}>})
   const {slug}=await params;const p=find(slug);if(!p) notFound();
   const {site:SITE}=getContent();
   const more=publishedPosts().filter(x=>x.id!==p.id).slice(0,3);
-  const jsonld={'@context':'https://schema.org','@type':'BlogPosting',headline:p.title,description:p.excerpt||undefined,image:p.cover?SITE.url+p.cover:undefined,datePublished:p.publishedAt,dateModified:p.updatedAt,mainEntityOfPage:`${SITE.url}/blog/${p.slug}`,keywords:[p.focusKeyword,p.keywords,p.tags].filter(Boolean).join(', ')||undefined,articleSection:p.category,author:p.author?{'@type':'Person',name:p.author}:{'@type':'Organization',name:SITE.brand,url:SITE.url},publisher:{'@type':'Organization',name:SITE.brand,url:SITE.url}};
+  const url=`${SITE.url}/blog/${p.slug}`;
+  const place=p.locality?{'@type':'Place',name:[p.locality,p.region].filter(Boolean).join(', '),address:{'@type':'PostalAddress',addressLocality:p.locality,addressRegion:p.region||undefined,addressCountry:'PK'}}:undefined;
+  const org={'@type':'Organization','@id':`${SITE.url}/#organization`,name:SITE.brand,url:SITE.url,telephone:SITE.phone||undefined};
+  const faqs=faqsOf(p.body);
+  const graph:Record<string,unknown>[]=[
+    {'@type':'BlogPosting','@id':`${url}#article`,headline:p.title,description:p.seoDescription||p.excerpt||undefined,image:p.cover?{'@type':'ImageObject',url:SITE.url+p.cover,caption:p.coverAlt||p.title,width:1600,height:900}:undefined,datePublished:p.publishedAt,dateModified:p.updatedAt,inLanguage:'en-PK',wordCount:p.body.split(/\s+/).length,mainEntityOfPage:url,keywords:[p.focusKeyword,p.keywords,p.tags].filter(Boolean).join(', ')||undefined,articleSection:p.category,author:p.author?{'@type':'Person',name:p.author}:org,publisher:org,
+      spatialCoverage:place,
+      about:p.locality?{'@type':'Service',name:'Domestic staff placement',serviceType:'Domestic staffing agency',provider:org,areaServed:place}:undefined,
+      speakable:{'@type':'SpeakableSpecification',cssSelector:['.blog-article-head h1','.blog-prose > blockquote:first-of-type']}},
+    {'@type':'BreadcrumbList',itemListElement:[{'@type':'ListItem',position:1,name:'Home',item:SITE.url},{'@type':'ListItem',position:2,name:'Blog',item:`${SITE.url}/blog`},{'@type':'ListItem',position:3,name:p.title,item:url}]},
+  ];
+  if(faqs.length) graph.push({'@type':'FAQPage','@id':`${url}#faq`,mainEntity:faqs.map(f=>({'@type':'Question',name:f.q,acceptedAnswer:{'@type':'Answer',text:f.a}}))});
+  const jsonld={'@context':'https://schema.org','@graph':graph};
   return <main>
     <script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify(jsonld).replace(/</g,'\\u003c')}}/>
     <article className="blog-article">

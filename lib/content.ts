@@ -50,12 +50,17 @@ function withFixed(c:Content):Content{return {...c, site:{...c.site,...FIXED}}}
 
 export function getPublicContent():PublicContent{
   const {posts,...rest}=getContent();
-  const live=posts.filter(p=>p.status==='published').sort((a,b)=>b.publishedAt.localeCompare(a.publishedAt));
+  const live=posts.filter(isLive).sort((a,b)=>b.publishedAt.localeCompare(a.publishedAt));
   return {...rest, hasBlog:live.length>0, latestPosts:live.slice(0,3).map(({slug,title,excerpt,cover,coverAlt,publishedAt,category})=>({slug,title,excerpt,cover,coverAlt,publishedAt,category}))};
 }
 
+// A post is live once it is published and its date/time has arrived, so posts can be
+// scheduled ahead: they appear on their own (pages refresh every few minutes).
+export const isLive=(p:Post)=>p.status==='published'&&Date.parse(p.publishedAt)<=Date.now();
+export const isScheduled=(p:Post)=>p.status==='published'&&Date.parse(p.publishedAt)>Date.now();
+
 export function publishedPosts():Post[]{
-  return getContent().posts.filter(p=>p.status==='published').sort((a,b)=>b.publishedAt.localeCompare(a.publishedAt));
+  return getContent().posts.filter(isLive).sort((a,b)=>b.publishedAt.localeCompare(a.publishedAt));
 }
 
 // Save a change. Each save keeps the previous version in history/ (last 50) so mistakes can be undone.

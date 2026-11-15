@@ -1,5 +1,6 @@
 import type {MetadataRoute} from 'next';
 import {getContent,publishedPosts} from '@/lib/content';
+export const revalidate=300;
 export default function sitemap():MetadataRoute.Sitemap{
   const {site:SITE,services,cities}=getContent();
   const posts=publishedPosts();

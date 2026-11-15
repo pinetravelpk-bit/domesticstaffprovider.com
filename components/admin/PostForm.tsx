@@ -7,6 +7,9 @@ import {SeoPanel} from './SeoPanel';
 
 const slugify=(s:string)=>s.toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g,'').replace(/&/g,' and ').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,80);
 
+// ISO time -> value for a datetime-local input, in Pakistan time (UTC+5).
+const pkLocal=(iso:string)=>new Date(Date.parse(iso)+5*3600e3).toISOString().slice(0,16);
+
 export default function PostForm({post}:{post?:Post}){
   const [title,setTitle]=useState(post?.title||'');
   const [slug,setSlug]=useState(post?.slug||'');
@@ -83,7 +86,7 @@ export default function PostForm({post}:{post?:Post}){
       <div className="adm-form">
         <div className="adm-card adm-form">
           <label className="adm-field"><span>Status</span><select name="status" defaultValue={post?.status||'draft'}><option value="draft">Draft (only visible here)</option><option value="published">Published (live on the website)</option></select></label>
-          <label className="adm-field"><span>Date</span><input type="date" name="publishedAt" defaultValue={(post?.publishedAt||'').slice(0,10)||today}/></label>
+          <label className="adm-field"><span>Publish date &amp; time</span><input type="datetime-local" name="publishedAt" defaultValue={post?.publishedAt?pkLocal(post.publishedAt):''}/><small>Pakistan time. Leave empty for now. A future time schedules the post: it goes live by itself.</small></label>
           <button className="adm-btn" type="submit">Save</button>
           {post?.status==='published'&&<a className="adm-btn ghost" href={`/blog/${post.slug}`} target="_blank" rel="noreferrer">View on website</a>}
         </div>
@@ -99,6 +102,8 @@ export default function PostForm({post}:{post?:Post}){
         <div className="adm-card adm-form">
           <label className="adm-field"><span>Category</span><input type="text" name="category" maxLength={60} defaultValue={post?.category||''} placeholder="e.g. Hiring tips"/></label>
           <label className="adm-field"><span>Tags</span><input type="text" name="tags" maxLength={300} defaultValue={post?.tags||''} placeholder="maids, Islamabad, salary"/><small>Separate with commas.</small></label>
+          <label className="adm-field"><span>City / town (local SEO)</span><input type="text" name="locality" maxLength={80} defaultValue={post?.locality||''} placeholder="e.g. Rawalpindi"/></label>
+          <label className="adm-field"><span>Province / region</span><input type="text" name="region" maxLength={80} defaultValue={post?.region||''} placeholder="e.g. Punjab"/></label>
           <label className="adm-field"><span>Author</span><input type="text" name="author" maxLength={80} defaultValue={post?.author||''} placeholder="Domestic Staff Provider"/></label>
         </div>
       </div>
